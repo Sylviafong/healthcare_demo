@@ -1,0 +1,1711 @@
+<html lang="zh-CN"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI家庭健康守护官</title>
+    <!-- Tailwind CSS v3 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+    <!-- 统一的 Tailwind 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1677FF',
+                        secondary: '#69C0FF',
+                        accent: '#0958D9',
+                        warning: '#FAAD14',
+                        danger: '#F5222D',
+                        success: '#52C41A',
+                        light: '#E6F7FF',
+                        dark: '#0958D9',
+                        'card-bg': '#FFFFFF',
+                        'page-bg': '#F5F5F5',
+                        'text-primary': '#262626',
+                        'text-secondary': '#595959',
+                        'text-tertiary': '#8C8C8C',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'sans-serif'],
+                    },
+                    fontSize: {
+                        'xxl': '1.75rem',
+                        'xxxl': '2rem',
+                    },
+                    boxShadow: {
+                        'card': '0 2px 8px rgba(0, 0, 0, 0.08)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .text-shadow {
+                text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+            }
+            .btn-shadow {
+                box-shadow: 0 2px 6px rgba(22, 119, 255, 0.3);
+            }
+            .card-shadow {
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            }
+            .btn-hover:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 4px 8px rgba(22, 119, 255, 0.4);
+            }
+            .card-hover:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            }
+            .gradient-bg {
+                background: linear-gradient(135deg, var(--tw-gradient-from) 0%, var(--tw-gradient-to) 100%);
+            }
+            .tab-active {
+                color: theme('colors.primary');
+                border-bottom: 2px solid theme('colors.primary');
+            }
+        }
+    </style>
+</head>
+<body class="bg-page-bg font-sans text-text-primary">
+    <!-- 顶部导航栏 -->
+    <nav class="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/bc44609ecf96400890dddbed4ecde1ec~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260418203326DC10404C4AE46D4B69AA&amp;rrcfp=f06b921b&amp;x-expires=1779107641&amp;x-signature=8gVwBz6mZbYmeJvEPK1C01dDXxw%3D" alt="AI家庭健康守护官" class="h-8 w-8">
+                <span class="text-lg font-medium" style="font-weight: normal;">智护安康
+</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="elderBtn" class="px-4 py-1.5 bg-primary text-white rounded-full text-sm font-medium hover:bg-accent transition duration-300 btn-shadow btn-hover" style="font-size: 12px; font-weight: bold;">长辈端</button>
+                <button id="childBtn" class="px-4 py-1.5 bg-white text-primary border border-primary rounded-full text-sm font-medium hover:bg-light transition duration-300" style="font-size: 12px;">子女端</button>
+                <button class="p-2 text-gray-500 hover:text-primary transition duration-300">
+                    <i class="fa fa-bell-o"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主内容区域 -->
+    <main class="container mx-auto px-4 py-4">
+        <!-- 长辈端界面 -->
+        <div id="elderInterface" class="block">
+            <!-- 长辈端首页 -->
+            <div id="elderHome" class="block">
+                <!-- 欢迎卡片 -->
+                <div class="bg-gradient-to-r from-primary to-secondary rounded-xl p-6 text-white mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-1">欢迎使用 AI 家庭健康守护官</h2>
+                            <p class="text-white/90">简单易用的健康助手，为您的健康保驾护航</p>
+                        </div>
+                        <img src="https://p26-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/bc44609ecf96400890dddbed4ecde1ec~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260418203326DC10404C4AE46D4B69AA&amp;rrcfp=f06b921b&amp;x-expires=1779107641&amp;x-signature=8gVwBz6mZbYmeJvEPK1C01dDXxw%3D" alt="AI家庭健康守护官" class="h-16 w-16">
+                    </div>
+                </div>
+
+                <!-- 快捷功能区 -->
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+                    <!-- 语音问AI按钮 -->
+                    <div class="bg-white rounded-xl p-4 text-center card-shadow card-hover transition duration-300 cursor-pointer" onclick="showElderVoice()">
+                        <div class="bg-light rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                            <i class="fa fa-microphone text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-base font-medium text-text-primary">语音问AI</h3>
+                    </div>
+
+                    <!-- 今日健康按钮 -->
+                    <div class="bg-white rounded-xl p-4 text-center card-shadow card-hover transition duration-300 cursor-pointer" onclick="showElderHealth()">
+                        <div class="bg-light rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                            <i class="fa fa-heartbeat text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-base font-medium text-text-primary">今日健康</h3>
+                    </div>
+
+                    <!-- 紧急联系按钮 -->
+                    <div class="bg-white rounded-xl p-4 text-center card-shadow card-hover transition duration-300 cursor-pointer" onclick="showElderEmergency()">
+                        <div class="bg-light rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                            <i class="fa fa-phone text-danger text-2xl"></i>
+                        </div>
+                        <h3 class="text-base font-medium text-text-primary">紧急联系</h3>
+                    </div>
+
+
+
+
+
+                    <!-- AI陪伴按钮 -->
+                    <div class="bg-white rounded-xl p-4 text-center card-shadow card-hover transition duration-300 cursor-pointer" onclick="showElderCompanion()">
+                        <div class="bg-light rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                            <i class="fa fa-comments-o text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-base font-medium text-text-primary">AI陪伴</h3>
+                    </div>
+                </div>
+
+                <!-- 健康数据概览 -->
+                <div class="bg-white rounded-xl p-5 card-shadow mb-6">
+                    <h3 class="text-lg font-bold text-text-primary mb-4">健康数据概览</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <!-- 血压数据 -->
+                        <div class="bg-light rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-text-secondary">血压</span>
+                                <span class="text-xs text-text-tertiary">今天 08:30</span>
+                            </div>
+                            <div class="flex items-end">
+                                <span class="text-2xl font-bold text-danger" style="font-size: 20px;">145/92</span>
+                                <span class="text-sm text-text-secondary ml-1 mb-0.5" style="font-size: 13px;">mmHg</span>
+                            </div>
+                            <div class="mt-2 flex items-center">
+                                <span class="text-xs text-danger font-medium flex items-center">
+                                    <i class="fa fa-arrow-up mr-1"></i> 偏高
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- 血糖数据 -->
+                        <div class="bg-light rounded-lg p-4">
+                            <div class="flex items-center justify-between mb-2">
+                                <span class="text-sm text-text-secondary">血糖</span>
+                                <span class="text-xs text-text-tertiary">今天 07:15</span>
+                            </div>
+                            <div class="flex items-end">
+                                <span class="text-2xl font-bold text-warning" style="font-size: 20px;">7.8</span>
+                                <span class="text-sm text-text-secondary ml-1 mb-0.5" style="font-size: 13px;">mmol/L</span>
+                            </div>
+                            <div class="mt-2 flex items-center">
+                                <span class="text-xs text-warning font-medium flex items-center">
+                                    <i class="fa fa-arrow-up mr-1"></i> 略高
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI健康提示卡片 -->
+                <div class="bg-white rounded-xl p-5 card-shadow mb-6">
+                    <div class="flex items-start">
+                        <div class="bg-warning/10 rounded-full p-3 mr-4">
+                            <i class="fa fa-lightbulb-o text-warning text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-text-primary mb-2">AI健康提示</h3>
+                            <p class="text-text-secondary text-sm mb-2">检测到您最近3天血压偏高，建议：</p>
+                            <ul class="text-text-secondary text-sm space-y-1">
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-success mt-0.5 mr-2"></i>
+                                    <span>保持规律作息，避免熬夜</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-success mt-0.5 mr-2"></i>
+                                    <span>减少盐分摄入，多吃蔬菜水果</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-success mt-0.5 mr-2"></i>
+                                    <span>适当运动，每天步行30分钟</span>
+                                </li>
+                                <li class="flex items-start">
+                                    <i class="fa fa-check-circle text-success mt-0.5 mr-2"></i>
+                                    <span>按医嘱服药，不要自行调整药量</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 今日用药提醒 -->
+                <div class="bg-white rounded-xl p-5 card-shadow mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-text-primary">今日用药提醒</h3>
+                        <span class="text-xs text-text-tertiary">2/3 已完成</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center p-3 bg-light rounded-lg">
+                            <div class="bg-success/10 rounded-full w-10 h-10 flex items-center justify-center text-success mr-4">
+                                <i class="fa fa-check"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-text-primary">降压药</h4>
+                                <p class="text-xs text-text-tertiary">每日一次，早餐后服用</p>
+                            </div>
+                            <div class="flex flex-col items-end">
+                                <span class="text-xs text-success font-medium">已服用</span>
+                                <span class="text-xs text-text-tertiary">08:45</span>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center p-3 bg-light rounded-lg">
+                            <div class="bg-warning/10 rounded-full w-10 h-10 flex items-center justify-center text-warning mr-4">
+                                <i class="fa fa-clock-o"></i>
+                            </div>
+                            <div class="flex-1">
+                                <h4 class="font-medium text-text-primary">降糖药</h4>
+                                <p class="text-xs text-text-tertiary">每日两次，餐前30分钟服用</p>
+                            </div>
+                            <div class="flex flex-col items-end">
+                                <span class="text-xs text-warning font-medium">待服用</span>
+                                <span class="text-xs text-text-tertiary">午餐前</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 长辈端语音交互页面 -->
+            <div id="elderVoice" class="hidden">
+                <div class="max-w-2xl mx-auto bg-white rounded-xl p-6 card-shadow">
+                    <div class="flex items-center mb-6">
+                        <button onclick="showElderHome()" class="mr-4 text-primary hover:text-blue-700 transition duration-300">
+                            <i class="fa fa-arrow-left text-xl"></i>
+                        </button>
+                        <div class="text-center flex-1">
+                            <h2 class="text-2xl font-bold text-primary">语音交互</h2>
+                            <p class="text-gray-600">请说出您的健康问题</p>
+                        </div>
+                        <div class="w-8"></div>
+                    </div>
+
+                    <div class="bg-light rounded-lg p-6 mb-6 min-h-40 flex flex-col justify-between">
+                        <div id="voiceMessages" class="space-y-4 mb-4">
+                            <div class="flex justify-start">
+                                <div class="bg-white rounded-lg py-2 px-4 max-w-xs shadow-sm">
+                                    <p class="text-gray-800">您好，我是您的AI健康助手，有什么可以帮您？</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="flex items-center">
+                            <input type="text" id="voiceInput" placeholder="输入您的问题或点击麦克风语音输入..." class="flex-1 border border-gray-300 rounded-l-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary">
+                            <button id="sendVoiceBtn" class="bg-primary text-white rounded-r-lg py-2 px-4 hover:bg-blue-700 transition duration-300">
+                                <i class="fa fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button id="startVoiceBtn" class="bg-primary text-white rounded-full w-16 h-16 flex items-center justify-center mx-auto hover:bg-blue-700 transition duration-300 btn-shadow btn-hover">
+                            <i class="fa fa-microphone text-2xl"></i>
+                        </button>
+                        <p class="text-gray-600 mt-2">点击开始语音输入</p>
+                    </div>
+
+                    <div class="mt-8">
+                        <h3 class="text-lg font-bold text-gray-800 mb-3">常见问题示例：</h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <button class="example-question bg-light hover:bg-blue-100 text-gray-800 rounded-lg py-2 px-4 text-left transition duration-300">这个保健品能治高血压吗？</button>
+                            <button class="example-question bg-light hover:bg-blue-100 text-gray-800 rounded-lg py-2 px-4 text-left transition duration-300">有人打电话说我社保卡异常</button>
+                            <button class="example-question bg-light hover:bg-blue-100 text-gray-800 rounded-lg py-2 px-4 text-left transition duration-300">今天头有点晕是怎么回事？</button>
+                            <button class="example-question bg-light hover:bg-blue-100 text-gray-800 rounded-lg py-2 px-4 text-left transition duration-300">这个投资每月返钱是真的吗？</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 text-center">
+                        <button onclick="showElderHome()" class="bg-blue-500 text-white rounded-lg py-3 px-8 hover:bg-blue-600 transition duration-300 shadow-md hover:shadow-lg font-medium">
+                            返回首页
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 长辈端健康数据页面 -->
+            <div id="elderHealth" class="hidden">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex items-center mb-6">
+                        <button onclick="showElderHome()" class="mr-4 text-primary hover:text-blue-700 transition duration-300">
+                            <i class="fa fa-arrow-left text-xl"></i>
+                        </button>
+                        <div class="text-center flex-1">
+                            <h2 class="text-2xl font-bold text-primary">今日健康</h2>
+                            <p class="text-gray-600">查看您的健康数据和提醒</p>
+                        </div>
+                        <div class="w-8"></div>
+                    </div>
+
+                    <!-- 健康数据卡片 -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                        <!-- 血压卡片 -->
+                        <div class="bg-white rounded-xl p-6 card-shadow">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-bold text-gray-800">血压</h3>
+                                <span class="text-sm text-gray-500">今天 08:30</span>
+                            </div>
+                            <div class="flex items-end">
+                                <span class="text-4xl font-bold text-danger">145/92</span>
+                                <span class="text-gray-600 ml-2 mb-1">mmHg</span>
+                            </div>
+                            <div class="mt-2 flex items-center">
+                                <span class="text-danger text-sm font-medium flex items-center">
+                                    <i class="fa fa-arrow-up mr-1"></i> 偏高
+                                </span>
+                                <button id="recordBloodPressureBtn" class="ml-auto bg-light text-primary rounded-md py-1 px-3 text-sm hover:bg-blue-100 transition duration-300">
+                                    记录新数据
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 血糖卡片 -->
+                        <div class="bg-white rounded-xl p-6 card-shadow">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-xl font-bold text-gray-800">血糖</h3>
+                                <span class="text-sm text-gray-500">今天 07:15</span>
+                            </div>
+                            <div class="flex items-end">
+                                <span class="text-4xl font-bold text-warning">7.8</span>
+                                <span class="text-gray-600 ml-2 mb-1">mmol/L</span>
+                            </div>
+                            <div class="mt-2 flex items-center">
+                                <span class="text-warning text-sm font-medium flex items-center">
+                                    <i class="fa fa-arrow-up mr-1"></i> 略高
+                                </span>
+                                <button id="recordBloodSugarBtn" class="ml-auto bg-light text-primary rounded-md py-1 px-3 text-sm hover:bg-blue-100 transition duration-300">
+                                    记录新数据
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 用药提醒卡片 -->
+                    <div class="bg-white rounded-xl p-6 card-shadow mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-xl font-bold text-gray-800">今日用药提醒</h3>
+                            <button id="manageMedicationBtn" class="bg-light text-primary rounded-md py-1 px-3 text-sm hover:bg-blue-100 transition duration-300">
+                                管理用药
+                            </button>
+                        </div>
+                        <div class="space-y-4" id="medicationDisplayList">
+                            <div class="flex items-center p-3 bg-light rounded-lg">
+                                <div class="bg-primary rounded-full w-10 h-10 flex items-center justify-center text-white mr-4">
+                                    <i class="fa fa-pills"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800">降压药</h4>
+                                    <p class="text-sm text-gray-600">每日一次，早餐后服用</p>
+                                </div>
+                                <div class="flex flex-col items-end">
+                                    <span class="text-sm text-success font-medium">已服用</span>
+                                    <span class="text-xs text-gray-500">08:45</span>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center p-3 bg-light rounded-lg">
+                                <div class="bg-primary rounded-full w-10 h-10 flex items-center justify-center text-white mr-4">
+                                    <i class="fa fa-pills"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800">降糖药</h4>
+                                    <p class="text-sm text-gray-600">每日两次，餐前30分钟服用</p>
+                                </div>
+                                <div class="flex flex-col items-end">
+                                    <span class="text-sm text-warning font-medium">未服用</span>
+                                    <span class="text-xs text-gray-500">午餐前</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AI健康总结卡片 -->
+                    <div class="bg-white rounded-xl p-6 card-shadow mb-8">
+                        <div class="flex items-start">
+                            <div class="bg-light rounded-full p-3 mr-4">
+                                <i class="fa fa-robot text-primary text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-2">AI健康总结</h3>
+                                <p class="text-gray-700">根据您最近的健康数据，AI分析结果如下：</p>
+                                <div class="mt-3 p-4 bg-light rounded-lg">
+                                    <p class="text-gray-800">您的血压连续3天偏高，血糖也略高于正常范围。建议您：</p>
+                                    <ul class="list-disc list-inside text-gray-700 mt-2 space-y-1">
+                                        <li>严格控制饮食，减少盐分和糖分摄入</li>
+                                        <li>确保按时服用降压药和降糖药</li>
+                                        <li>每天下午可进行30分钟散步</li>
+                                        <li>建议近期到医院复查血压和血糖</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 体检报告上传 -->
+                    <div class="bg-white rounded-xl p-6 card-shadow mb-8">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">体检报告解读</h3>
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center">
+                            <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/4d06e266331a4add89d238d59a8822ac~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260418203326DC10404C4AE46D4B69AA&amp;rrcfp=f06b921b&amp;x-expires=1779107669&amp;x-signature=SBEu0DB0qu2%2FUYD1HLLxV3zzBxU%3D" alt="体检报告示例" class="w-32 h-32 object-contain mx-auto mb-4 opacity-50">
+                            <p class="text-gray-600 mb-4">上传您的体检报告，AI将为您解读异常指标</p>
+                            <button id="uploadReportBtn" class="bg-primary text-white rounded-md py-2 px-6 hover:bg-blue-700 transition duration-300 btn-shadow btn-hover">
+                                <i class="fa fa-upload mr-2"></i> 上传体检报告
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button onclick="showElderHome()" class="bg-blue-500 text-white rounded-lg py-3 px-8 hover:bg-blue-600 transition duration-300 shadow-md hover:shadow-lg font-medium">
+                            返回首页
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 长辈端紧急联系页面 -->
+            <div id="elderEmergency" class="hidden">
+                <div class="max-w-2xl mx-auto">
+                    <div class="flex items-center mb-6">
+                        <button onclick="showElderHome()" class="mr-4 text-primary hover:text-blue-700 transition duration-300">
+                            <i class="fa fa-arrow-left text-xl"></i>
+                        </button>
+                        <div class="text-center flex-1">
+                            <h2 class="text-2xl font-bold text-primary">紧急联系</h2>
+                            <p class="text-gray-600">一键联系您的家人</p>
+                        </div>
+                        <div class="w-8"></div>
+                    </div>
+
+                    <div class="bg-white rounded-xl p-6 card-shadow">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <!-- 联系人1 -->
+                            <div class="flex flex-col items-center p-4 bg-light rounded-lg">
+                                <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-white text-3xl mb-4">
+                                    <i class="fa fa-user"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-1">小明（儿子）</h3>
+                                <p class="text-gray-600 mb-4">138-0000-0001</p>
+                                <button class="bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center hover:bg-blue-700 transition duration-300">
+                                    <i class="fa fa-phone text-xl"></i>
+                                </button>
+                            </div>
+
+                            <!-- 联系人2 -->
+                            <div class="flex flex-col items-center p-4 bg-light rounded-lg">
+                                <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-white text-3xl mb-4">
+                                    <i class="fa fa-user"></i>
+                                </div>
+                                <h3 class="text-xl font-bold text-gray-800 mb-1">小红（女儿）</h3>
+                                <p class="text-gray-600 mb-4">139-0000-0002</p>
+                                <button class="bg-primary text-white rounded-full w-12 h-12 flex items-center justify-center hover:bg-blue-700 transition duration-300">
+                                    <i class="fa fa-phone text-xl"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 紧急求助按钮 -->
+                        <div class="mt-8 text-center">
+                            <button class="bg-danger text-white rounded-full w-20 h-20 flex items-center justify-center mx-auto hover:bg-red-700 transition duration-300 btn-shadow btn-hover">
+                                <i class="fa fa-exclamation-triangle text-3xl"></i>
+                            </button>
+                            <p class="text-danger font-bold mt-2">紧急求助</p>
+                            <p class="text-gray-600 text-sm">按下后将同时通知所有家人</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 text-center">
+                        <button onclick="showElderHome()" class="bg-blue-500 text-white rounded-lg py-3 px-8 hover:bg-blue-600 transition duration-300 shadow-md hover:shadow-lg font-medium">
+                            返回首页
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 长辈端陪伴页面 -->
+            <div id="elderCompanion" class="hidden">
+                <div class="max-w-4xl mx-auto">
+                    <div class="flex items-center mb-6">
+                        <button onclick="showElderHome()" class="mr-4 text-primary hover:text-blue-700 transition duration-300">
+                            <i class="fa fa-arrow-left text-xl"></i>
+                        </button>
+                        <div class="text-center flex-1">
+                            <h2 class="text-2xl font-bold text-primary">AI陪伴</h2>
+                            <p class="text-gray-600">听戏、听新闻、聊天</p>
+                        </div>
+                        <div class="w-8"></div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        <!-- 听戏 -->
+                        <div class="bg-white rounded-xl p-6 card-shadow card-hover transition duration-300 cursor-pointer">
+                            <div class="bg-light rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                                <i class="fa fa-music text-primary text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">听戏曲</h3>
+                            <p class="text-gray-600 text-center">京剧、豫剧、越剧等经典曲目</p>
+                        </div>
+
+                        <!-- 听新闻 -->
+                        <div class="bg-white rounded-xl p-6 card-shadow card-hover transition duration-300 cursor-pointer">
+                            <div class="bg-light rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                                <i class="fa fa-newspaper-o text-primary text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">听新闻</h3>
+                            <p class="text-gray-600 text-center">每日热点新闻，语音播报</p>
+                        </div>
+
+                        <!-- 聊天 -->
+                        <div class="bg-white rounded-xl p-6 card-shadow card-hover transition duration-300 cursor-pointer">
+                            <div class="bg-light rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                                <i class="fa fa-comments-o text-primary text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-gray-800 mb-2 text-center">聊聊天</h3>
+                            <p class="text-gray-600 text-center">随时陪您聊天，解闷解乏</p>
+                        </div>
+                    </div>
+
+                    <!-- 今日推荐 -->
+                    <div class="bg-white rounded-xl p-6 card-shadow mb-8">
+                        <h3 class="text-xl font-bold text-gray-800 mb-4">今日推荐</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center p-3 bg-light rounded-lg">
+                                <div class="bg-primary rounded-full w-10 h-10 flex items-center justify-center text-white mr-4">
+                                    <i class="fa fa-music"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800">京剧《霸王别姬》选段</h4>
+                                    <p class="text-sm text-gray-600">经典剧目，由梅兰芳先生演唱</p>
+                                </div>
+                                <button class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-700 transition duration-300">
+                                    <i class="fa fa-play"></i>
+                                </button>
+                            </div>
+
+                            <div class="flex items-center p-3 bg-light rounded-lg">
+                                <div class="bg-primary rounded-full w-10 h-10 flex items-center justify-center text-white mr-4">
+                                    <i class="fa fa-newspaper-o"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-800">今日要闻：全国多地迎来降温</h4>
+                                    <p class="text-sm text-gray-600">预计未来三天，全国多地将迎来降温天气</p>
+                                </div>
+                                <button class="bg-primary text-white rounded-full w-8 h-8 flex items-center justify-center hover:bg-blue-700 transition duration-300">
+                                    <i class="fa fa-play"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button onclick="showElderHome()" class="bg-blue-500 text-white rounded-lg py-3 px-8 hover:bg-blue-600 transition duration-300 shadow-md hover:shadow-lg font-medium">
+                            返回首页
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 子女端界面 -->
+        <div id="childInterface" class="hidden">
+            <!-- 子女端仪表盘 -->
+            <div id="childDashboard" class="block">
+                <!-- 顶部卡片 -->
+                <div class="bg-gradient-to-r from-primary to-secondary rounded-xl p-6 text-white mb-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-2xl font-bold mb-1">家庭健康仪表盘</h2>
+                            <p class="text-white/90">实时监控家人健康状况</p>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button class="bg-white/20 rounded-full p-2 hover:bg-white/30 transition duration-300">
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                            <button class="bg-white/20 rounded-full p-2 hover:bg-white/30 transition duration-300">
+                                <i class="fa fa-cog"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 健康状态概览 -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <!-- 血压状态 -->
+                    <div class="bg-white rounded-xl p-5 card-shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-base font-bold text-text-primary">血压状态</h3>
+                            <span class="text-xs text-danger font-medium px-2 py-1 bg-danger/10 rounded-full">异常</span>
+                        </div>
+                        <div class="flex items-end">
+                            <span class="text-3xl font-bold text-danger">145/92</span>
+                            <span class="text-sm text-text-secondary ml-2 mb-1">mmHg</span>
+                        </div>
+                        <p class="text-xs text-text-tertiary mt-2">连续3天偏高，建议关注</p>
+                        <div class="mt-4 h-24 flex items-center justify-center">
+                            <canvas id="bloodPressureChart" width="100%" height="100%"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 血糖状态 -->
+                    <div class="bg-white rounded-xl p-5 card-shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-base font-bold text-text-primary">血糖状态</h3>
+                            <span class="text-xs text-warning font-medium px-2 py-1 bg-warning/10 rounded-full">轻度异常</span>
+                        </div>
+                        <div class="flex items-end">
+                            <span class="text-3xl font-bold text-warning">7.8</span>
+                            <span class="text-sm text-text-secondary ml-2 mb-1">mmol/L</span>
+                        </div>
+                        <p class="text-xs text-text-tertiary mt-2">略高于正常范围，注意饮食</p>
+                        <div class="mt-4 h-24 flex items-center justify-center">
+                            <canvas id="bloodSugarChart" width="100%" height="100%"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 用药状态 -->
+                    <div class="bg-white rounded-xl p-5 card-shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-base font-bold text-text-primary">用药状态</h3>
+                            <span class="text-xs text-warning font-medium px-2 py-1 bg-warning/10 rounded-full">部分未服用</span>
+                        </div>
+                        <div class="space-y-3 mt-2">
+                            <div class="flex items-center">
+                                <div class="w-2 h-2 rounded-full bg-success mr-2"></div>
+                                <span class="text-xs text-text-secondary">降压药 - 已服用</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-2 h-2 rounded-full bg-warning mr-2"></div>
+                                <span class="text-xs text-text-secondary">降糖药 - 未服用</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-2 h-2 rounded-full bg-success mr-2"></div>
+                                <span class="text-xs text-text-secondary">钙片 - 已服用</span>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <button class="w-full bg-light text-primary rounded-lg py-2 text-sm font-medium hover:bg-blue-100 transition duration-300">
+                                查看详情
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 健康提醒和通知 -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <!-- 健康提醒 -->
+                    <div class="bg-white rounded-xl p-5 card-shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-base font-bold text-text-primary">健康提醒</h3>
+                            <span class="text-xs text-text-tertiary">3条新提醒</span>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-start p-3 bg-light rounded-lg">
+                                <div class="bg-danger/10 rounded-full p-2 mr-3 mt-0.5">
+                                    <i class="fa fa-exclamation-circle text-danger text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-text-primary">血压异常提醒</h4>
+                                    <p class="text-xs text-text-tertiary">父亲的血压连续3天偏高，建议及时就医</p>
+                                    <span class="text-xs text-text-tertiary mt-1 block">10分钟前</span>
+                                </div>
+                            </div>
+                            <div class="flex items-start p-3 bg-light rounded-lg">
+                                <div class="bg-warning/10 rounded-full p-2 mr-3 mt-0.5">
+                                    <i class="fa fa-clock-o text-warning text-sm"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-text-primary">用药提醒</h4>
+                                    <p class="text-xs text-text-tertiary">父亲今天午餐前忘记服用降糖药</p>
+                                    <span class="text-xs text-text-tertiary mt-1 block">2小时前</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 安全监测 -->
+                    <div class="bg-white rounded-xl p-5 card-shadow">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-base font-bold text-text-primary">安全监测</h3>
+                            <span class="text-xs text-success font-medium px-2 py-1 bg-success/10 rounded-full">正常</span>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="bg-success/10 rounded-full w-10 h-10 flex items-center justify-center text-success mr-3">
+                                        <i class="fa fa-home"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-medium text-text-primary">居家安全</h4>
+                                        <p class="text-xs text-text-tertiary">一切正常</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-text-tertiary">10分钟前</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center">
+                                    <div class="bg-success/10 rounded-full w-10 h-10 flex items-center justify-center text-success mr-3">
+                                        <i class="fa fa-shield"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-sm font-medium text-text-primary">防诈骗</h4>
+                                        <p class="text-xs text-text-tertiary">未检测到风险</p>
+                                    </div>
+                                </div>
+                                <span class="text-xs text-text-tertiary">今天</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI风险预警 -->
+                <div class="bg-white rounded-xl p-5 card-shadow mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-text-primary">AI风险预警</h3>
+                        <span class="text-xs text-danger font-medium px-2 py-1 bg-danger/10 rounded-full">2个新预警</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-start p-3 bg-danger/5 rounded-lg">
+                            <div class="bg-danger/10 rounded-full p-2 mr-3 mt-0.5">
+                                <i class="fa fa-exclamation-circle text-danger text-sm"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-text-primary">血压异常</h4>
+                                <p class="text-xs text-text-tertiary">连续3天血压偏高，收缩压超过140mmHg</p>
+                                <div class="flex items-center mt-1">
+                                    <span class="text-xs text-text-tertiary">今天 08:30</span>
+                                    <button class="ml-auto bg-light text-primary text-xs rounded px-2 py-0.5 hover:bg-blue-100 transition duration-300">
+                                        查看详情
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="flex items-start p-3 bg-warning/5 rounded-lg">
+                            <div class="bg-warning/10 rounded-full p-2 mr-3 mt-0.5">
+                                <i class="fa fa-shield text-warning text-sm"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-text-primary">诈骗风险提醒</h4>
+                                <p class="text-xs text-text-tertiary">检测到疑似诈骗电话，已自动拦截</p>
+                                <div class="flex items-center mt-1">
+                                    <span class="text-xs text-text-tertiary">昨天 14:25</span>
+                                    <button class="ml-auto bg-light text-primary text-xs rounded px-2 py-0.5 hover:bg-blue-100 transition duration-300">
+                                        查看详情
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI健康分析 -->
+                <div class="bg-white rounded-xl p-5 card-shadow mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-text-primary">AI健康分析</h3>
+                        <button class="text-xs text-primary hover:text-accent transition duration-300">查看完整报告</button>
+                    </div>
+                    <div class="p-4 bg-light rounded-lg">
+                        <p class="text-sm text-text-secondary mb-3">根据最近7天的健康数据分析：</p>
+                        <div class="space-y-2">
+                            <div class="flex items-start">
+                                <i class="fa fa-info-circle text-primary mt-0.5 mr-2"></i>
+                                <p class="text-sm text-text-secondary">血压持续偏高，建议尽快就医复查</p>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fa fa-info-circle text-primary mt-0.5 mr-2"></i>
+                                <p class="text-sm text-text-secondary">血糖波动较大，需注意饮食控制</p>
+                            </div>
+                            <div class="flex items-start">
+                                <i class="fa fa-info-circle text-success mt-0.5 mr-2"></i>
+                                <p class="text-sm text-text-secondary">用药依从性良好，继续保持</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 快捷操作 -->
+                <div class="bg-white rounded-xl p-5 card-shadow mb-6">
+                    <h3 class="text-base font-bold text-text-primary mb-4">快捷操作</h3>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <button class="flex flex-col items-center p-3 bg-light rounded-lg hover:bg-blue-100 transition duration-300">
+                            <div class="bg-primary/10 rounded-full w-10 h-10 flex items-center justify-center text-primary mb-2">
+                                <i class="fa fa-phone"></i>
+                            </div>
+                            <span class="text-xs text-text-primary">联系家人</span>
+                        </button>
+                        <button class="flex flex-col items-center p-3 bg-light rounded-lg hover:bg-blue-100 transition duration-300">
+                            <div class="bg-primary/10 rounded-full w-10 h-10 flex items-center justify-center text-primary mb-2">
+                                <i class="fa fa-calendar-plus-o"></i>
+                            </div>
+                            <span class="text-xs text-text-primary">预约体检</span>
+                        </button>
+                        <button class="flex flex-col items-center p-3 bg-light rounded-lg hover:bg-blue-100 transition duration-300">
+                            <div class="bg-primary/10 rounded-full w-10 h-10 flex items-center justify-center text-primary mb-2">
+                                <i class="fa fa-medkit"></i>
+                            </div>
+                            <span class="text-xs text-text-primary">管理用药</span>
+                        </button>
+                        <button class="flex flex-col items-center p-3 bg-light rounded-lg hover:bg-blue-100 transition duration-300">
+                            <div class="bg-primary/10 rounded-full w-10 h-10 flex items-center justify-center text-primary mb-2">
+                                <i class="fa fa-file-text-o"></i>
+                            </div>
+                            <span class="text-xs text-text-primary">上传报告</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-warning mr-2"></div>
+                                <span class="text-sm text-gray-700">降糖药 - 未服用</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-success mr-2"></div>
+                                <span class="text-sm text-gray-700">维生素 - 已服用</span>
+                            </div>
+                        </div>
+                        <div class="mt-4 h-12 bg-gray-50 rounded flex items-center justify-center">
+                            <span class="text-gray-500">设置提醒</span>
+                        </div>
+                    
+                
+
+
+
+                <!-- 异常事件时间线 -->
+                <div class="bg-white rounded-xl p-6 card-shadow mb-8">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">异常事件时间线</h3>
+                    <div class="relative pl-8 border-l-2 border-gray-200 space-y-6">
+                        <div class="relative">
+                            <div class="absolute -left-[34px] bg-danger rounded-full w-6 h-6 flex items-center justify-center">
+                                <div class="w-2 h-2 bg-white rounded-full"></div>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">血压异常</h4>
+                                <p class="text-sm text-gray-600">收缩压145mmHg，舒张压92mmHg，均高于正常范围</p>
+                                <span class="text-xs text-gray-500">今天 08:30</span>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute -left-[34px] bg-warning rounded-full w-6 h-6 flex items-center justify-center">
+                                <div class="w-2 h-2 bg-white rounded-full"></div>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">用药未按时</h4>
+                                <p class="text-sm text-gray-600">午餐前降糖药未服用</p>
+                                <span class="text-xs text-gray-500">今天 12:00</span>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute -left-[34px] bg-gray-400 rounded-full w-6 h-6 flex items-center justify-center">
+                                <div class="w-2 h-2 bg-white rounded-full"></div>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">长时间未活动</h4>
+                                <p class="text-sm text-gray-600">检测到连续4小时无活动记录</p>
+                                <span class="text-xs text-gray-500">昨天 15:45</span>
+                            </div>
+                        </div>
+
+                        <div class="relative">
+                            <div class="absolute -left-[34px] bg-gray-400 rounded-full w-6 h-6 flex items-center justify-center">
+                                <div class="w-2 h-2 bg-white rounded-full"></div>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">血糖偏高</h4>
+                                <p class="text-sm text-gray-600">空腹血糖7.8mmol/L，高于正常范围</p>
+                                <span class="text-xs text-gray-500">昨天 07:15</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 健康报告预览 -->
+                <div class="bg-white rounded-xl p-6 card-shadow mb-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-xl font-bold text-gray-800">健康周报</h3>
+                        <span class="text-sm text-gray-500">2023年6月12日 - 6月18日</span>
+                    </div>
+                    <div class="p-4 bg-light rounded-lg">
+                        <p class="text-gray-700 mb-3">本周健康状况总结：</p>
+                        <ul class="list-disc list-inside text-gray-700 space-y-1 mb-3">
+                            <li>血压持续偏高，建议就医咨询</li>
+                            <li>血糖控制不稳定，需调整饮食</li>
+                            <li>用药依从性良好，继续保持</li>
+                            <li>活动量不足，建议增加户外活动</li>
+                        </ul>
+                        <div class="flex justify-end">
+                            <button class="bg-primary text-white rounded-md py-1 px-4 text-sm hover:bg-blue-700 transition duration-300">
+                                查看完整报告
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            
+
+            <!-- 子女端健康报告页面 -->
+            <div id="childReport" class="hidden">
+                <!-- 健康报告内容 -->
+            </div>
+
+            <!-- 子女端远程设置页面 -->
+            <div id="childSettings" class="hidden">
+                <!-- 设置内容 -->
+            </div>
+        
+    </main>
+
+    <!-- 底部导航栏 -->
+    <footer class="bg-white shadow-inner py-4 mt-8">
+        <div class="container mx-auto px-4 text-center text-gray-600">
+            <p>© 2026 AI家庭健康守护官 - 为家庭健康保驾护航</p>
+        </div>
+    </footer>
+
+    <!-- 体检报告解读弹窗 -->
+    <div id="reportModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-2xl w-full mx-4 max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between mb-4 sticky top-0 bg-white z-10 py-2">
+                <h3 class="text-xl font-bold text-gray-800">AI体检报告解读</h3>
+                <button id="closeReportModal" class="text-gray-500 hover:text-gray-700 p-2 rounded-full hover:bg-gray-100 transition duration-300">
+                    <i class="fa fa-times text-2xl"></i>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto pb-4 pr-1">
+                <div class="mb-4">
+                    <img src="https://p3-flow-imagex-sign.byteimg.com/tos-cn-i-a9rns2rl98/rc/pc/super_tool/4d06e266331a4add89d238d59a8822ac~tplv-a9rns2rl98-image.image?lk3s=8e244e95&amp;rcl=20260418203326DC10404C4AE46D4B69AA&amp;rrcfp=f06b921b&amp;x-expires=1779107669&amp;x-signature=SBEu0DB0qu2%2FUYD1HLLxV3zzBxU%3D" alt="体检报告" class="w-full h-auto rounded-lg">
+                </div>
+                <div class="mb-4 p-4 bg-light rounded-lg">
+                    <h4 class="font-bold text-gray-800 mb-2">AI解读结果：</h4>
+                    <div class="space-y-4">
+                        <div class="flex items-start">
+                            <div class="bg-danger rounded-full p-1 mr-2 mt-1">
+                                <i class="fa fa-exclamation-circle text-white text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-800">血压异常（高风险）</p>
+                                <p class="text-sm text-gray-600">检测值：165/102 mmHg，高于正常范围（＜120/80mmHg理想，＜140/90mmHg正常上限）</p>
+                                <p class="text-sm text-gray-600">通俗解释：您的血压属于2级高血压，比正常标准高了不少，长期高会伤心脏、血管和肾，一定要重视起来，按时吃药、少盐少油，别生气着急。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-warning rounded-full p-1 mr-2 mt-1">
+                                <i class="fa fa-exclamation-triangle text-white text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-800">主动脉硬化（中风险）</p>
+                                <p class="text-sm text-gray-600">检测值：主动脉硬化</p>
+                                <p class="text-sm text-gray-600">通俗解释：给全身供血的大血管有点变硬了，就像水管用久了会老化一样，和高血压、年龄都有关系，控制好血压血脂能减缓老化速度。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-warning rounded-full p-1 mr-2 mt-1">
+                                <i class="fa fa-exclamation-triangle text-white text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-800">前列腺增大并钙化（中风险）</p>
+                                <p class="text-sm text-gray-600">检测值：增大并钙化</p>
+                                <p class="text-sm text-gray-600">通俗解释：前列腺有点变大、还有点"小结石"，年纪大了很常见，容易引起尿频、尿急、尿不尽，别憋尿、少喝酒，天冷注意保暖，必要时去泌尿外科看看。</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="bg-success rounded-full p-1 mr-2 mt-1">
+                                <i class="fa fa-check-circle text-white text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="font-medium text-gray-800">心电图正常</p>
+                                <p class="text-sm text-gray-600">通俗解释：心脏的电活动很正常，说明目前心脏的基本工作状态是稳定的，这是个好消息。</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-4 p-4 bg-blue-50 rounded-lg">
+                    <h4 class="font-bold text-gray-800 mb-2">医生建议：</h4>
+                    <div class="text-sm text-gray-700 space-y-2">
+                        <p>1. <span class="font-medium">血压是目前最需要重视的问题</span>，一定要按医生说的吃药，每天监测血压，少吃盐、不抽烟不喝酒，别生气、别累着。</p>
+                        <p>2. <span class="font-medium">前列腺的问题</span>，别憋尿、天冷注意保暖，有尿意就去排，定期去泌尿外科复查。</p>
+                        <p>3. <span class="font-medium">血管有点硬化</span>，和高血压有关系，控制好血压血脂，多吃清淡的，慢慢调理。</p>
+                        <p>4. 其他指标大部分都是正常的，少数偏高偏低的小指标不用太担心，定期复查就行。</p>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-between items-center pt-4 border-t border-gray-200 sticky bottom-0 bg-white">
+                <button id="closeReportModalBtn" class="bg-gray-200 text-gray-800 rounded-md py-2 px-4 hover:bg-gray-300 transition duration-300">
+                    关闭
+                </button>
+                <button class="bg-primary text-white rounded-md py-2 px-4 hover:bg-blue-700 transition duration-300">
+                    保存解读结果
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 血压记录弹窗 -->
+    <div id="bloodPressureModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-gray-800">记录血压</h3>
+                <button id="closeBloodPressureModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 mb-2">测量时间</label>
+                    <input type="text" id="bpDateTime" class="w-full border border-gray-300 rounded-lg py-2 px-4 bg-gray-100" readonly="">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2">收缩压 (mmHg)</label>
+                        <input type="number" id="systolic" placeholder="例如：120" class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">舒张压 (mmHg)</label>
+                        <input type="number" id="diastolic" placeholder="例如：80" class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">备注</label>
+                    <textarea id="bpNote" placeholder="例如：测量前运动了" class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end mt-6">
+                <button id="saveBloodPressure" class="bg-primary text-white rounded-md py-2 px-6 hover:bg-blue-700 transition duration-300">
+                    保存记录
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 血糖记录弹窗 -->
+    <div id="bloodSugarModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-gray-800">记录血糖</h3>
+                <button id="closeBloodSugarModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 mb-2">测量时间</label>
+                    <input type="text" id="bsDateTime" class="w-full border border-gray-300 rounded-lg py-2 px-4 bg-gray-100" readonly="">
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">血糖值 (mmol/L)</label>
+                    <input type="number" step="0.1" id="bloodSugarValue" placeholder="例如：5.6" class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">测量时间</label>
+                    <select id="bsTimeType" class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="空腹">空腹</option>
+                        <option value="餐后2小时">餐后2小时</option>
+                        <option value="随机">随机</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">备注</label>
+                    <textarea id="bsNote" placeholder="例如：早餐吃了米饭" class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end mt-6">
+                <button id="saveBloodSugar" class="bg-primary text-white rounded-md py-2 px-6 hover:bg-blue-700 transition duration-300">
+                    保存记录
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用药提醒弹窗 -->
+    <div id="medicationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-gray-800">用药管理</h3>
+                <button id="closeMedicationModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="mb-4">
+                <button id="addMedicationBtn" class="w-full bg-light text-primary rounded-lg py-2 px-4 hover:bg-blue-100 transition duration-300 mb-4">
+                    <i class="fa fa-plus mr-2"></i> 添加药物
+                </button>
+                <div class="space-y-3" id="medicationList">
+                    <div class="flex items-center p-3 bg-light rounded-lg">
+                        <div class="bg-primary rounded-full w-10 h-10 flex items-center justify-center text-white mr-4">
+                            <i class="fa fa-pills"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">降压药</h4>
+                            <p class="text-sm text-gray-600">每日一次，早餐后服用</p>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <button class="text-sm text-success font-medium flex items-center mark-as-taken">
+                                <i class="fa fa-check-circle mr-1"></i> 标记已服用
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex items-center p-3 bg-light rounded-lg">
+                        <div class="bg-primary rounded-full w-10 h-10 flex items-center justify-center text-white mr-4">
+                            <i class="fa fa-pills"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">降糖药</h4>
+                            <p class="text-sm text-gray-600">每日两次，餐前30分钟服用</p>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <button class="text-sm text-warning font-medium flex items-center mark-as-taken">
+                                <i class="fa fa-circle-o mr-1"></i> 标记已服用
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="flex justify-end">
+                <button id="saveMedication" class="bg-primary text-white rounded-md py-2 px-4 hover:bg-blue-700 transition duration-300">
+                    完成
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加药物弹窗 -->
+    <div id="addMedicationModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 max-w-md w-full mx-4">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold text-gray-800">添加药物</h3>
+                <button id="closeAddMedicationModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fa fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 mb-2">药物名称</label>
+                    <input type="text" id="medName" placeholder="例如：降压药" class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">服用剂量</label>
+                    <input type="text" id="medDosage" placeholder="例如：1片" class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">服用频率</label>
+                    <select id="medFrequency" class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary">
+                        <option value="每日一次">每日一次</option>
+                        <option value="每日两次">每日两次</option>
+                        <option value="每日三次">每日三次</option>
+                        <option value="每周一次">每周一次</option>
+                        <option value="需要时服用">需要时服用</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">服用时间</label>
+                    <input type="text" id="medTime" placeholder="例如：早餐后" class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>
+                <div>
+                    <label class="block text-gray-700 mb-2">备注</label>
+                    <textarea id="medNote" placeholder="例如：饭后30分钟服用" class="w-full border border-gray-300 rounded-lg py-2 px-4 focus:outline-none focus:ring-2 focus:ring-primary"></textarea>
+                </div>
+            </div>
+            <div class="flex justify-end mt-6">
+                <button id="confirmAddMedication" class="bg-primary text-white rounded-md py-2 px-6 hover:bg-blue-700 transition duration-300">
+                    添加药物
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 界面切换逻辑
+        document.addEventListener('DOMContentLoaded', function() {
+            // 长辈端和子女端切换
+            const elderBtn = document.getElementById('elderBtn');
+            const childBtn = document.getElementById('childBtn');
+            const elderInterface = document.getElementById('elderInterface');
+            const childInterface = document.getElementById('childInterface');
+
+            elderBtn.addEventListener('click', function() {
+                elderInterface.classList.remove('hidden');
+                elderInterface.classList.add('block');
+                childInterface.classList.remove('block');
+                childInterface.classList.add('hidden');
+                elderBtn.classList.remove('bg-accent', 'text-white');
+                elderBtn.classList.add('bg-white', 'text-primary');
+                childBtn.classList.remove('bg-white', 'text-primary');
+                childBtn.classList.add('bg-accent', 'text-white');
+            });
+
+            childBtn.addEventListener('click', function() {
+                childInterface.classList.remove('hidden');
+                childInterface.classList.add('block');
+                elderInterface.classList.remove('block');
+                elderInterface.classList.add('hidden');
+                childBtn.classList.remove('bg-accent', 'text-white');
+                childBtn.classList.add('bg-white', 'text-primary');
+                elderBtn.classList.remove('bg-white', 'text-primary');
+                elderBtn.classList.add('bg-accent', 'text-white');
+            });
+
+            // 体检报告上传弹窗
+            const uploadReportBtn = document.getElementById('uploadReportBtn');
+            const reportModal = document.getElementById('reportModal');
+            const closeReportModal = document.getElementById('closeReportModal');
+
+            uploadReportBtn.addEventListener('click', function() {
+                reportModal.classList.remove('hidden');
+            });
+
+            closeReportModal.addEventListener('click', function() {
+                reportModal.classList.add('hidden');
+            });
+
+            // 血压记录弹窗
+            const recordBloodPressureBtn = document.getElementById('recordBloodPressureBtn');
+            const bloodPressureModal = document.getElementById('bloodPressureModal');
+            const closeBloodPressureModal = document.getElementById('closeBloodPressureModal');
+            const saveBloodPressure = document.getElementById('saveBloodPressure');
+
+            recordBloodPressureBtn.addEventListener('click', function() {
+                // 自动设置当前时间
+                const now = new Date();
+                const timeString = now.getFullYear() + '-' + 
+                                  (now.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                                  now.getDate().toString().padStart(2, '0') + ' ' + 
+                                  now.getHours().toString().padStart(2, '0') + ':' + 
+                                  now.getMinutes().toString().padStart(2, '0');
+                document.getElementById('bpDateTime').value = timeString;
+                bloodPressureModal.classList.remove('hidden');
+            });
+
+            closeBloodPressureModal.addEventListener('click', function() {
+                bloodPressureModal.classList.add('hidden');
+            });
+
+            saveBloodPressure.addEventListener('click', function() {
+                const systolic = document.getElementById('systolic').value;
+                const diastolic = document.getElementById('diastolic').value;
+                
+                if (systolic && diastolic) {
+                    // 更新显示的血压值
+                    const bpDisplay = document.querySelector('#elderHealth .text-4xl.font-bold.text-danger');
+                    if (bpDisplay) {
+                        bpDisplay.textContent = `${systolic}/${diastolic}`;
+                        
+                        // 根据血压值更新颜色和状态
+                        if (systolic >= 140 || diastolic >= 90) {
+                            bpDisplay.classList.remove('text-warning', 'text-success');
+                            bpDisplay.classList.add('text-danger');
+                            document.querySelector('#elderHealth .text-danger.text-sm.font-medium').textContent = '偏高';
+                        } else if (systolic >= 120 || diastolic >= 80) {
+                            bpDisplay.classList.remove('text-danger', 'text-success');
+                            bpDisplay.classList.add('text-warning');
+                            document.querySelector('#elderHealth .text-danger.text-sm.font-medium').textContent = '略高';
+                            document.querySelector('#elderHealth .text-danger.text-sm.font-medium').classList.remove('text-danger');
+                            document.querySelector('#elderHealth .text-danger.text-sm.font-medium').classList.add('text-warning');
+                        } else {
+                            bpDisplay.classList.remove('text-danger', 'text-warning');
+                            bpDisplay.classList.add('text-success');
+                            document.querySelector('#elderHealth .text-danger.text-sm.font-medium').textContent = '正常';
+                            document.querySelector('#elderHealth .text-danger.text-sm.font-medium').classList.remove('text-danger', 'text-warning');
+                            document.querySelector('#elderHealth .text-danger.text-sm.font-medium').classList.add('text-success');
+                        }
+                    }
+                    
+                    // 更新时间
+                    const now = new Date();
+                    const timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+                    document.querySelector('#elderHealth .text-sm.text-gray-500').textContent = '今天 ' + timeString;
+                    
+                    // 关闭弹窗
+                    bloodPressureModal.classList.add('hidden');
+                    
+                    // 显示成功提示
+                    alert('血压记录已保存');
+                } else {
+                    alert('请输入完整的血压数据');
+                }
+            });
+
+            // 血糖记录弹窗
+            const recordBloodSugarBtn = document.getElementById('recordBloodSugarBtn');
+            const bloodSugarModal = document.getElementById('bloodSugarModal');
+            const closeBloodSugarModal = document.getElementById('closeBloodSugarModal');
+            const saveBloodSugar = document.getElementById('saveBloodSugar');
+
+            recordBloodSugarBtn.addEventListener('click', function() {
+                // 自动设置当前时间
+                const now = new Date();
+                const timeString = now.getFullYear() + '-' + 
+                                  (now.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                                  now.getDate().toString().padStart(2, '0') + ' ' + 
+                                  now.getHours().toString().padStart(2, '0') + ':' + 
+                                  now.getMinutes().toString().padStart(2, '0');
+                document.getElementById('bsDateTime').value = timeString;
+                bloodSugarModal.classList.remove('hidden');
+            });
+
+            closeBloodSugarModal.addEventListener('click', function() {
+                bloodSugarModal.classList.add('hidden');
+            });
+
+            saveBloodSugar.addEventListener('click', function() {
+                const bloodSugarValue = document.getElementById('bloodSugarValue').value;
+                
+                if (bloodSugarValue) {
+                    // 更新显示的血糖值
+                    const bsDisplay = document.querySelectorAll('#elderHealth .text-4xl.font-bold')[1];
+                    if (bsDisplay) {
+                        bsDisplay.textContent = bloodSugarValue;
+                        
+                        // 根据血糖值更新颜色和状态
+                        const value = parseFloat(bloodSugarValue);
+                        const bsTimeType = document.getElementById('bsTimeType').value;
+                        
+                        if (bsTimeType === '空腹') {
+                            if (value >= 7.0) {
+                                bsDisplay.classList.remove('text-warning', 'text-success');
+                                bsDisplay.classList.add('text-danger');
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].textContent = '偏高';
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].classList.remove('text-warning', 'text-success');
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].classList.add('text-danger');
+                            } else if (value >= 6.1) {
+                                bsDisplay.classList.remove('text-danger', 'text-success');
+                                bsDisplay.classList.add('text-warning');
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].textContent = '略高';
+                            } else {
+                                bsDisplay.classList.remove('text-danger', 'text-warning');
+                                bsDisplay.classList.add('text-success');
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].textContent = '正常';
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].classList.remove('text-danger', 'text-warning');
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].classList.add('text-success');
+                            }
+                        } else if (bsTimeType === '餐后2小时') {
+                            if (value >= 11.1) {
+                                bsDisplay.classList.remove('text-warning', 'text-success');
+                                bsDisplay.classList.add('text-danger');
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].textContent = '偏高';
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].classList.remove('text-warning', 'text-success');
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].classList.add('text-danger');
+                            } else if (value >= 7.8) {
+                                bsDisplay.classList.remove('text-danger', 'text-success');
+                                bsDisplay.classList.add('text-warning');
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].textContent = '略高';
+                            } else {
+                                bsDisplay.classList.remove('text-danger', 'text-warning');
+                                bsDisplay.classList.add('text-success');
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].textContent = '正常';
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].classList.remove('text-danger', 'text-warning');
+                                document.querySelectorAll('#elderHealth .text-warning.text-sm.font-medium')[1].classList.add('text-success');
+                            }
+                        }
+                    }
+                    
+                    // 更新时间
+                    const now = new Date();
+                    const timeString = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+                    document.querySelectorAll('#elderHealth .text-sm.text-gray-500')[1].textContent = '今天 ' + timeString;
+                    
+                    // 关闭弹窗
+                    bloodSugarModal.classList.add('hidden');
+                    
+                    // 显示成功提示
+                    alert('血糖记录已保存');
+                } else {
+                    alert('请输入血糖值');
+                }
+            });
+
+            // 用药管理弹窗
+            const manageMedicationBtn = document.getElementById('manageMedicationBtn');
+            const medicationModal = document.getElementById('medicationModal');
+            const closeMedicationModal = document.getElementById('closeMedicationModal');
+            const saveMedication = document.getElementById('saveMedication');
+
+            manageMedicationBtn.addEventListener('click', function() {
+                medicationModal.classList.remove('hidden');
+            });
+
+            closeMedicationModal.addEventListener('click', function() {
+                medicationModal.classList.add('hidden');
+            });
+
+            saveMedication.addEventListener('click', function() {
+                // 更新用药显示列表
+                const medicationList = document.getElementById('medicationList');
+                const medicationDisplayList = document.getElementById('medicationDisplayList');
+                
+                if (medicationList && medicationDisplayList) {
+                    medicationDisplayList.innerHTML = '';
+                    
+                    // 复制用药列表到显示列表
+                    medicationList.querySelectorAll('.flex.items-center.p-3.bg-light.rounded-lg').forEach(item => {
+                        const newItem = item.cloneNode(true);
+                        
+                        // 替换标记按钮为状态显示
+                        const markButton = newItem.querySelector('.mark-as-taken');
+                        if (markButton) {
+                            const isTaken = markButton.classList.contains('text-success');
+                            const statusDiv = document.createElement('div');
+                            statusDiv.className = 'flex flex-col items-end';
+                            
+                            if (isTaken) {
+                                statusDiv.innerHTML = `
+                                    <span class="text-sm text-success font-medium">已服用</span>
+                                    <span class="text-xs text-gray-500">${new Date().getHours().toString().padStart(2, '0')}:${new Date().getMinutes().toString().padStart(2, '0')}</span>
+                                `;
+                            } else {
+                                statusDiv.innerHTML = `
+                                    <span class="text-sm text-warning font-medium">未服用</span>
+                                    <span class="text-xs text-gray-500">午餐前</span>
+                                `;
+                            }
+                            
+                            markButton.parentNode.replaceChild(statusDiv, markButton);
+                        }
+                        
+                        medicationDisplayList.appendChild(newItem);
+                    });
+                }
+                
+                // 关闭弹窗
+                medicationModal.classList.add('hidden');
+                
+                // 显示成功提示
+                alert('用药管理已更新');
+            });
+
+            // 添加药物弹窗
+            const addMedicationBtn = document.getElementById('addMedicationBtn');
+            const addMedicationModal = document.getElementById('addMedicationModal');
+            const closeAddMedicationModal = document.getElementById('closeAddMedicationModal');
+            const confirmAddMedication = document.getElementById('confirmAddMedication');
+
+            addMedicationBtn.addEventListener('click', function() {
+                addMedicationModal.classList.remove('hidden');
+            });
+
+            closeAddMedicationModal.addEventListener('click', function() {
+                addMedicationModal.classList.add('hidden');
+            });
+
+            confirmAddMedication.addEventListener('click', function() {
+                const medName = document.getElementById('medName').value;
+                const medDosage = document.getElementById('medDosage').value;
+                const medFrequency = document.getElementById('medFrequency').value;
+                const medTime = document.getElementById('medTime').value;
+                
+                if (medName && medDosage && medFrequency) {
+                    // 创建新药物项
+                    const medicationList = document.getElementById('medicationList');
+                    const newMedication = document.createElement('div');
+                    newMedication.className = 'flex items-center p-3 bg-light rounded-lg';
+                    newMedication.innerHTML = `
+                        <div class="bg-primary rounded-full w-10 h-10 flex items-center justify-center text-white mr-4">
+                            <i class="fa fa-pills"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-medium text-gray-800">${medName}</h4>
+                            <p class="text-sm text-gray-600">${medFrequency}，${medTime ? medTime + '服用' : ''} ${medDosage}</p>
+                        </div>
+                        <div class="flex flex-col items-end">
+                            <button class="text-sm text-warning font-medium flex items-center mark-as-taken">
+                                <i class="fa fa-circle-o mr-1"></i> 标记已服用
+                            </button>
+                        </div>
+                    `;
+                    
+                    medicationList.appendChild(newMedication);
+                    
+                    // 添加标记已服用的点击事件
+                    const markButton = newMedication.querySelector('.mark-as-taken');
+                    markButton.addEventListener('click', function() {
+                        if (this.classList.contains('text-warning')) {
+                            this.classList.remove('text-warning');
+                            this.classList.add('text-success');
+                            // 自动添加当前时间
+                            const now = new Date();
+                            const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                                              now.getMinutes().toString().padStart(2, '0');
+                            this.innerHTML = `<i class="fa fa-check-circle mr-1"></i> 已服用 (${timeString})`;
+                        } else {
+                            this.classList.remove('text-success');
+                            this.classList.add('text-warning');
+                            this.innerHTML = '<i class="fa fa-circle-o mr-1"></i> 标记已服用';
+                        }
+                    });
+                    
+                    // 清空表单
+                    document.getElementById('medName').value = '';
+                    document.getElementById('medDosage').value = '';
+                    document.getElementById('medTime').value = '';
+                    document.getElementById('medNote').value = '';
+                    
+                    // 关闭弹窗
+                    addMedicationModal.classList.add('hidden');
+                    
+                    // 显示成功提示
+                    alert('药物已添加');
+                } else {
+                    alert('请填写药物名称、剂量和频率');
+                }
+            });
+
+            // 为现有的标记已服用按钮添加点击事件
+            document.querySelectorAll('.mark-as-taken').forEach(button => {
+                button.addEventListener('click', function() {
+                    if (this.classList.contains('text-warning')) {
+                        this.classList.remove('text-warning');
+                        this.classList.add('text-success');
+                        // 自动添加当前时间
+                        const now = new Date();
+                        const timeString = now.getHours().toString().padStart(2, '0') + ':' + 
+                                          now.getMinutes().toString().padStart(2, '0');
+                        this.innerHTML = `<i class="fa fa-check-circle mr-1"></i> 已服用 (${timeString})`;
+                    } else {
+                        this.classList.remove('text-success');
+                        this.classList.add('text-warning');
+                        this.innerHTML = '<i class="fa fa-circle-o mr-1"></i> 标记已服用';
+                    }
+                });
+            });
+
+            // 语音交互功能
+            const startVoiceBtn = document.getElementById('startVoiceBtn');
+            const voiceInput = document.getElementById('voiceInput');
+            const sendVoiceBtn = document.getElementById('sendVoiceBtn');
+            const voiceMessages = document.getElementById('voiceMessages');
+            const exampleQuestions = document.querySelectorAll('.example-question');
+
+            // 模拟语音输入
+            startVoiceBtn.addEventListener('click', function() {
+                startVoiceBtn.classList.add('bg-danger');
+                startVoiceBtn.innerHTML = '<i class="fa fa-microphone-slash text-2xl"></i>';
+                
+                // 模拟3秒后语音输入完成
+                setTimeout(function() {
+                    voiceInput.value = "今天头有点晕是怎么回事？";
+                    startVoiceBtn.classList.remove('bg-danger');
+                    startVoiceBtn.innerHTML = '<i class="fa fa-microphone text-2xl"></i>';
+                }, 3000);
+            });
+
+            // 发送消息
+            function sendMessage() {
+                const message = voiceInput.value.trim();
+                if (message) {
+                    // 添加用户消息
+                    voiceMessages.innerHTML += `
+                        <div class="flex justify-end">
+                            <div class="bg-primary text-white rounded-lg py-2 px-4 max-w-xs shadow-sm">
+                                <p>${message}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    // 清空输入框
+                    voiceInput.value = '';
+                    
+                    // 滚动到底部
+                    voiceMessages.scrollTop = voiceMessages.scrollHeight;
+                    
+                    // 模拟AI回复
+                    setTimeout(function() {
+                        let reply = '';
+                        
+                        // 根据问题生成不同回复
+                        if (message.includes('头晕')) {
+                            reply = "头晕可能有多种原因，如血压偏高、贫血、疲劳等。您最近血压偏高，这可能是导致头晕的原因之一。建议您：1. 坐下或躺下休息；2. 测量血压；3. 保持规律作息；4. 如果症状持续或加重，请及时就医。";
+                        } else if (message.includes('保健品') && message.includes('高血压')) {
+                            reply = "保健品不能替代药物治疗高血压。许多保健品声称能降血压，但缺乏科学依据，有些甚至可能与您正在服用的药物产生相互作用。建议您：1. 继续按医嘱服用降压药；2. 保持健康饮食和适量运动；3. 在服用任何保健品前，请先咨询医生或药师。";
+                        } else if (message.includes('社保卡') || message.includes('异常')) {
+                            reply = "这可能是电信诈骗！正规机构不会通过电话要求您提供个人敏感信息或转账。请记住：1. 不要向陌生人透露身份证号、银行卡号、密码等信息；2. 不要点击陌生链接或下载陌生应用；3. 如有疑问，请直接拨打社保卡服务热线12333咨询。";
+                        } else if (message.includes('投资') && message.includes('返钱')) {
+                            reply = "这种'高回报、低风险'的投资很可能是诈骗。请警惕以下特征：1. 承诺'每月返钱'等过高收益；2. 催促您尽快决定或转账；3. 要求保密不告诉家人。建议您：1. 不要轻信；2. 咨询家人意见；3. 通过正规渠道投资理财。";
+                        } else {
+                            reply = "感谢您的咨询。我是您的AI健康助手，可以帮您解答健康问题、解读体检报告、提醒用药等。请问还有什么可以帮您？";
+                        }
+                        
+                        // 添加AI回复
+                        voiceMessages.innerHTML += `
+                            <div class="flex justify-start">
+                                <div class="bg-white rounded-lg py-2 px-4 max-w-xs shadow-sm">
+                                    <p>${reply}</p>
+                                </div>
+                            </div>
+                        `;
+                        
+                        // 滚动到底部
+                        voiceMessages.scrollTop = voiceMessages.scrollHeight;
+                    }, 1000);
+                }
+            }
+
+            sendVoiceBtn.addEventListener('click', sendMessage);
+
+            voiceInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            // 示例问题点击
+            exampleQuestions.forEach(question => {
+                question.addEventListener('click', function() {
+                    voiceInput.value = this.textContent;
+                    sendMessage();
+                });
+            });
+        });
+
+        // 长辈端页面切换函数
+        function showElderHome() {
+            document.getElementById('elderHome').classList.remove('hidden');
+            document.getElementById('elderHome').classList.add('block');
+            document.getElementById('elderVoice').classList.remove('block');
+            document.getElementById('elderVoice').classList.add('hidden');
+            document.getElementById('elderHealth').classList.remove('block');
+            document.getElementById('elderHealth').classList.add('hidden');
+            document.getElementById('elderEmergency').classList.remove('block');
+            document.getElementById('elderEmergency').classList.add('hidden');
+            document.getElementById('elderCompanion').classList.remove('block');
+            document.getElementById('elderCompanion').classList.add('hidden');
+        }
+
+        function showElderVoice() {
+            document.getElementById('elderHome').classList.remove('block');
+            document.getElementById('elderHome').classList.add('hidden');
+            document.getElementById('elderVoice').classList.remove('hidden');
+            document.getElementById('elderVoice').classList.add('block');
+            document.getElementById('elderHealth').classList.remove('block');
+            document.getElementById('elderHealth').classList.add('hidden');
+            document.getElementById('elderEmergency').classList.remove('block');
+            document.getElementById('elderEmergency').classList.add('hidden');
+            document.getElementById('elderCompanion').classList.remove('block');
+            document.getElementById('elderCompanion').classList.add('hidden');
+        }
+
+        function showElderHealth() {
+            document.getElementById('elderHome').classList.remove('block');
+            document.getElementById('elderHome').classList.add('hidden');
+            document.getElementById('elderVoice').classList.remove('block');
+            document.getElementById('elderVoice').classList.add('hidden');
+            document.getElementById('elderHealth').classList.remove('hidden');
+            document.getElementById('elderHealth').classList.add('block');
+            document.getElementById('elderEmergency').classList.remove('block');
+            document.getElementById('elderEmergency').classList.add('hidden');
+            document.getElementById('elderCompanion').classList.remove('block');
+            document.getElementById('elderCompanion').classList.add('hidden');
+        }
+
+        function showElderEmergency() {
+            document.getElementById('elderHome').classList.remove('block');
+            document.getElementById('elderHome').classList.add('hidden');
+            document.getElementById('elderVoice').classList.remove('block');
+            document.getElementById('elderVoice').classList.add('hidden');
+            document.getElementById('elderHealth').classList.remove('block');
+            document.getElementById('elderHealth').classList.add('hidden');
+            document.getElementById('elderEmergency').classList.remove('hidden');
+            document.getElementById('elderEmergency').classList.add('block');
+            document.getElementById('elderCompanion').classList.remove('block');
+            document.getElementById('elderCompanion').classList.add('hidden');
+        }
+
+        function showElderCompanion() {
+            document.getElementById('elderHome').classList.remove('block');
+            document.getElementById('elderHome').classList.add('hidden');
+            document.getElementById('elderVoice').classList.remove('block');
+            document.getElementById('elderVoice').classList.add('hidden');
+            document.getElementById('elderHealth').classList.remove('block');
+            document.getElementById('elderHealth').classList.add('hidden');
+            document.getElementById('elderEmergency').classList.remove('block');
+            document.getElementById('elderEmergency').classList.add('hidden');
+            document.getElementById('elderCompanion').classList.remove('hidden');
+            document.getElementById('elderCompanion').classList.add('block');
+        }
+    </script>
+
+</body></html>
